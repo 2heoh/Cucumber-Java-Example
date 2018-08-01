@@ -15,8 +15,7 @@ public class StartPage extends AbstractPage {
         webDriverWait = new WebDriverWait(driver, 10);
     }
 
-    public ResultsPage find(String departureFrom, String arrivalTo, String dateDeparture, String dateArrival) {
-
+    public StartPage Departure(String departureFrom) {
         WebElement inputFrom = driver.findElement(By.name("from"));
 
         inputFrom.clear();
@@ -25,6 +24,10 @@ public class StartPage extends AbstractPage {
         By popupFrom = By.xpath("//*[@class='ac_match']");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(popupFrom)).click();
 
+        return this;
+    }
+
+    public StartPage Arrival(String arrivalTo) {
         WebElement inputTo = driver.findElement(By.name("to"));
         inputTo.clear();
         inputTo.sendKeys(arrivalTo);
@@ -32,13 +35,21 @@ public class StartPage extends AbstractPage {
         By popupTo = By.xpath("//*[@class='item ac_over']");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(popupTo)).click();
 
+        return this;
+    }
+
+    public StartPage Dates (String dateDeparture, String dateArrival) {
+
         By dateFrom = By.xpath("//a[text()='" + dateDeparture + "']");
 
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(dateFrom)).click();
 
         By dateTo = By.xpath("//a[text()='" + dateArrival + "']");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(dateTo)).click();
+        return this;
+    }
 
+    public ResultsPage Search() {
         By submit = By.name("search-btn-expand-bot");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(submit)).click();
 

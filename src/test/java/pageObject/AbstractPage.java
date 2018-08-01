@@ -15,4 +15,8 @@ public class AbstractPage {
 
         return new StartPage(driver);
     }
+
+    public void close() {
+        driver.quit();
+    }
 }
