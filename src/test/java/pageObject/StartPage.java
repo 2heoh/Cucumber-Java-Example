@@ -8,15 +8,23 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class StartPage extends AbstractPage {
 
-    private final WebDriverWait webDriverWait;
 
     public StartPage(WebDriver driver) {
         super(driver);
-        webDriverWait = new WebDriverWait(driver, 10);
+
+    }
+
+    public StartPage openStartPage(String url) {
+        driver.navigate().to(url);
+
+        return new StartPage(driver);
     }
 
     public StartPage Departure(String departureFrom) {
-        WebElement inputFrom = driver.findElement(By.name("from"));
+
+        By inputFromBy = By.name("from");
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(inputFromBy));
+        WebElement inputFrom = driver.findElement(inputFromBy);
 
         inputFrom.clear();
         inputFrom.sendKeys(departureFrom);
