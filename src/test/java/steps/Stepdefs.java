@@ -15,28 +15,22 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.Assert.assertTrue;
 
 public class Stepdefs {
-    StartPage startPage;
-    ResultsPage resultsPage;
+    private StartPage startPage;
+    private ResultsPage resultsPage;
 
     private WebDriver getDriver() {
         System.setProperty("webdriver.chrome.driver", "bin/chromedriver");
-
-        ChromeDriver driver = new ChromeDriver();
-
-        driver.manage().deleteAllCookies();
-        driver.manage().window().maximize();
-
-        return driver;
+        return new ChromeDriver();
     }
 
-    @Допустим("^пользователь открывет \"([^\"]*)\"$")
-    public void openPage(String address) throws Exception {
+    @Допустим("^мне нужно найти рейс$")
+    public void openPage() {
         startPage = new StartPage(getDriver());
-        startPage.openStartPage(address);
+        startPage.openStartPage("https://s7.ru");
     }
 
-    @Когда("^он выбирает поиск из города \"([^\"]*)\" в \"([^\"]*)\" туда \"([^\"]*)\"го обратно \"([^\"]*)\"го$")
-    public void searchFlightsByDestinationAndDates(String from, String to, String departure, String arrival) throws Exception {
+    @Когда("^я ищу рейс из \"([^\"]*)\" в \"([^\"]*)\" туда \"([^\"]*)\"го обратно \"([^\"]*)\"го$")
+    public void searchFlightsByDestinationAndDates(String from, String to, String departure, String arrival) {
         resultsPage = startPage
                         .Departure(from)
                         .Arrival(to)
@@ -44,29 +38,31 @@ public class Stepdefs {
                         .Search();
     }
 
-    @Тогда("^ему отбражется список возможных рейсов$")
-    public void checkFlightsFound() throws Exception {
+    @Тогда("^мне отбражется список возможных рейсов$")
+    public void checkFlightsFound() {
         int foundFlightsCount = resultsPage.getFlightsCount();
         assertTrue(foundFlightsCount > 0);
     }
 
-    @Когда("^он выбирает поиск \"([^\"]*)\" \"([^\"]*)\" через \"([^\"]*)\" дней на \"([^\"]*)\" дней$")
-    public void он_выбирает_поиск(String from, String to, int delta, int duration) throws Exception {
+    @Когда("^я ищу рейс (\\S+) (\\S+) (\\d+\\s\\S+) (\\d+\\s\\S+)$")
+    public void он_выбирает_поиск(String from, String to, String delta, String duration) {
+        int deltaDays = Integer.parseInt(delta.replaceAll("\\D+",""));
+        int durationDays = Integer.parseInt(duration.replaceAll("\\D+",""));
 
-        String departure = LocalDate.now().plusDays(delta).format(DateTimeFormatter.ofPattern("dd"));
-        String arrival = LocalDate.now().plusDays(delta + duration).format(DateTimeFormatter.ofPattern("dd"));
+        String departure = LocalDate.now().plusDays(deltaDays).format(DateTimeFormatter.ofPattern("dd"));
+        String arrival = LocalDate.now().plusDays((deltaDays + durationDays)).format(DateTimeFormatter.ofPattern("dd"));
 
         resultsPage = startPage.Departure(from).Arrival(to).Dates(departure, arrival).Search();
     }
 
-    @Тогда("^ему отбражется список рейсов$")
-    public void checkListOfFlightsNotEmpty() throws Exception {
+    @Тогда("^мне отбражется список рейсов$")
+    public void checkListOfFlightsNotEmpty() {
         int foundFlightsCount = resultsPage.getFlightsCount();
         assertTrue(foundFlightsCount > 0);
     }
 
-    @Тогда("^ему отбражется ничего не найдено$")
-    public void ему_отбражется() throws Exception {
+    @Тогда("^мне отбражется ничего не найдено$")
+    public void ему_отбражется() {
         assertTrue(resultsPage.errorFlightNotFoundErrorShowed());
     }
 

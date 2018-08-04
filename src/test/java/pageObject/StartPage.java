@@ -22,6 +22,8 @@ public class StartPage extends AbstractPage {
 
     public StartPage Departure(String departureFrom) {
 
+        driver.findElements(By.className("js_cookie_policy")).forEach(WebElement::click);
+
         By inputFromBy = By.name("from");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(inputFromBy));
         WebElement inputFrom = driver.findElement(inputFromBy);

@@ -1,5 +1,3 @@
-package com.uc;
-
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
@@ -11,4 +9,5 @@ import org.junit.runner.RunWith;
         glue = {"steps"}
 )
 public class RunCucumberTest {
+
 }

@@ -10,7 +10,8 @@ public class AbstractPage {
 
     public AbstractPage(WebDriver driver) {
         this.driver = driver;
-        webDriverWait = new WebDriverWait(driver, 10);
+        this.driver.manage().window().maximize();
+        webDriverWait = new WebDriverWait(driver, 20);
     }
 
     public void close() {
