@@ -3,12 +3,15 @@ package pageObject;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AbstractPage {
-
+public class Page {
     protected WebDriver driver;
-    protected final WebDriverWait webDriverWait;
+    protected WebDriverWait webDriverWait;
 
-    public AbstractPage(WebDriver driver) {
+    public String getBaseURL() {
+        return System.getenv("BASE_URL");
+    }
+
+    public Page(WebDriver driver) {
         this.driver = driver;
         this.driver.manage().window().maximize();
         webDriverWait = new WebDriverWait(driver, 20);
@@ -17,4 +20,6 @@ public class AbstractPage {
     public void close() {
         driver.quit();
     }
+
+
 }

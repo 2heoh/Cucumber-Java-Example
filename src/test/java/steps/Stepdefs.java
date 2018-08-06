@@ -6,7 +6,7 @@ import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.Тогда;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import pageObject.ResultsPage;
+import pageObject.SelectPage;
 import pageObject.StartPage;
 
 import java.time.LocalDate;
@@ -16,30 +16,38 @@ import static org.junit.Assert.assertTrue;
 
 public class Stepdefs {
     private StartPage startPage;
-    private ResultsPage resultsPage;
+    private SelectPage resultsPage;
+
+    private WebDriver driver;
 
     private WebDriver getDriver() {
-        System.setProperty("webdriver.chrome.driver", "bin/chromedriver");
-        return new ChromeDriver();
+
+        if(driver == null) {
+            System.setProperty("webdriver.chrome.driver", "bin/chromedriver");
+            driver = new ChromeDriver();
+        }
+
+        return driver;
     }
 
     @Допустим("^мне нужно найти рейс$")
-    public void openPage() {
-        startPage = new StartPage(getDriver());
-        startPage.openStartPage("https://s7.ru");
+    public void openPage() throws Exception {
+        startPage = PageFactory.getStartPage(getDriver());
     }
 
     @Когда("^я ищу рейс из \"([^\"]*)\" в \"([^\"]*)\" туда \"([^\"]*)\"го обратно \"([^\"]*)\"го$")
     public void searchFlightsByDestinationAndDates(String from, String to, String departure, String arrival) {
-        resultsPage = startPage
-                        .Departure(from)
-                        .Arrival(to)
-                        .Dates(departure, arrival)
-                        .Search();
+        startPage.Departure(from)
+            .Arrival(to)
+            .Dates(departure, arrival)
+            .Search();
     }
 
     @Тогда("^мне отбражется список возможных рейсов$")
-    public void checkFlightsFound() {
+    public void checkFlightsFound() throws Exception {
+
+        resultsPage = PageFactory.getSelectPage(getDriver());
+
         int foundFlightsCount = resultsPage.getFlightsCount();
         assertTrue(foundFlightsCount > 0);
     }
@@ -65,7 +73,6 @@ public class Stepdefs {
     public void ему_отбражется() {
         assertTrue(resultsPage.errorFlightNotFoundErrorShowed());
     }
-
 
     @After
     public void tearDown() {

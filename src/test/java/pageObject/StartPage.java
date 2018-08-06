@@ -4,25 +4,24 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class StartPage extends AbstractPage {
-
+public class StartPage extends Page {
 
     public StartPage(WebDriver driver) {
         super(driver);
-
     }
 
-    public StartPage openStartPage(String url) {
-        driver.navigate().to(url);
+    public StartPage openStartPage() {
+        driver.navigate().to(getBaseURL());
+
+        By cookieButton = By.className("js_cookie_policy");
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(cookieButton));
+        driver.findElements(cookieButton).forEach(WebElement::click);
 
         return new StartPage(driver);
     }
 
     public StartPage Departure(String departureFrom) {
-
-        driver.findElements(By.className("js_cookie_policy")).forEach(WebElement::click);
 
         By inputFromBy = By.name("from");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(inputFromBy));
@@ -59,10 +58,14 @@ public class StartPage extends AbstractPage {
         return this;
     }
 
-    public ResultsPage Search() {
+    public SelectPage Search() {
         By submit = By.name("search-btn-expand-bot");
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(submit)).click();
 
-        return new ResultsPage(driver);
+        return new SelectPage(driver);
+    }
+
+    public boolean isSearchPage() {
+        return webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("search-btn-expand-bot"))).isDisplayed();
     }
 }
